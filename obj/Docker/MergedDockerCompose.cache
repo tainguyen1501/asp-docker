@@ -1,0 +1,30 @@
+services:
+  redis_image:
+    container_name: redis
+    image: redis
+    ports:
+    - published: 6379
+      target: 6379
+  webapplication1:
+    build:
+      context: C:\TaiNguyen\Study\Docker\WebApplication1\WebApplication1
+      dockerfile: Dockerfile
+    container_name: webapplication1
+    depends_on:
+      redis_image:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+    image: webapplication1
+    links:
+    - redis_image
+    ports:
+    - published: 9001
+      target: 80
+    - target: 80
+    - published: 9000
+      target: 443
+    volumes:
+    - C:\Users\felix.nguyen\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+version: '3.4'
